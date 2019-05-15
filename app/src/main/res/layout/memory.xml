@@ -5,7 +5,7 @@
     android:background="@color/colorItemList">
 
     <TextView
-        android:id="@+id/tv_deviceMemory"
+        android:id="@+id/tv_device_memory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -15,7 +15,7 @@
         android:textSize="14sp" />
 
     <TextView
-        android:id="@+id/tv_freeMemory"
+        android:id="@+id/tv_free_memory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -26,11 +26,11 @@
         android:textSize="14sp" />
 
     <ProgressBar
-        android:id="@+id/progressBarMemory"
+        android:id="@+id/progress_bar_memory"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_deviceMemory"
+        android:layout_below="@id/tv_device_memory"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"

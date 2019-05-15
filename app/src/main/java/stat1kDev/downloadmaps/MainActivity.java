@@ -27,13 +27,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void initTextViewFreeMemory() {
-        textViewFreeMemory = findViewById(R.id.tv_freeMemory);
+        textViewFreeMemory = findViewById(R.id.tv_free_memory);
         freeMemory = getAvailableInternalMemorySize();
         textViewFreeMemory.setText(getResources().getString(R.string.free_memory, freeMemory));
     }
 
     public void initProgressBarMemory() {
-        progressBarMemory = findViewById(R.id.progressBarMemory);
+        progressBarMemory = findViewById(R.id.progress_bar_memory);
         freeMemory = getAvailableInternalMemorySize();
         allMemory = getTotalInternalMemorySize();
 

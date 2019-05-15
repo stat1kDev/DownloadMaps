@@ -3,16 +3,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@color/colorBackgroundActivity">
-    
+    android:background="@color/colorBackgroundActivity"
+    tools:context=".MainActivity">
+
     <include
+        android:id="@+id/memory_layout"
+        layout="@layout/memory"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        layout="@layout/memory" />
-    
+        android:layout_height="wrap_content" />
+
     <TextView
-        android:layout_width=""
-        android:layout_height="" />
+        android:id="@+id/tv_head"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/heightItemList"
+        android:layout_below="@id/memory_layout"
+        android:layout_marginTop="20dp"
+        android:background="@color/colorItemList"
+        android:gravity="start|center"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:text="@string/tv_head"
+        android:textColor="@color/textColor"
+        android:textSize="@dimen/textSizeItemList"
+        android:textStyle="bold" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_countries"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_head">
+
+    </android.support.v7.widget.RecyclerView>
 
 </RelativeLayout>
