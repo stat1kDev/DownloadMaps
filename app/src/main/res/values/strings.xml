@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Download Maps</string>
+    <string name="device_memory">Device memory</string>
+    <string name="free_memory">Free %1$.2f Gb</string>
+</resources>
