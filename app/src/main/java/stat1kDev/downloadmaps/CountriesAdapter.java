@@ -1,6 +1,7 @@
 package stat1kDev.downloadmaps;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -35,12 +36,13 @@ public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.Coun
         context = countriesViewHolder.nameCountry.getContext();
         ParserXml xml = new ParserXml(context);
 
-        List<String> listCountriesWithRegions = xml.parserXmlForCountriesWithRegions();
+        final List<String> listCountriesWithRegions = xml.parserXmlForCountriesWithRegions();
 
         for (int j = 0; j < listCountriesWithRegions.size(); j++) {
             if (countriesViewHolder.nameCountry.getText().toString().equals(listCountriesWithRegions.get(j))) {
                 countriesViewHolder.importImageButton.setVisibility(View.GONE);
                 countriesViewHolder.removeImageButton.setVisibility(View.GONE);
+                countriesViewHolder.downloadProgressBar.setVisibility(View.GONE);
                 break;
             } else {
                 countriesViewHolder.importImageButton.setVisibility(View.VISIBLE);
@@ -67,6 +69,20 @@ public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.Coun
                 countriesViewHolder.nameCountry.setPadding(0, 0, 0, 0);
             }
         });
+
+        countriesViewHolder.nameCountry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                for (int j = 0; j < listCountriesWithRegions.size(); j++) {
+                    if (countriesViewHolder.nameCountry.getText().toString().equals(listCountriesWithRegions.get(j))) {
+                        Intent intent = new Intent(context, RegionActivity.class);
+                        intent.putExtra("toolbarName", countriesViewHolder.nameCountry.getText().toString());
+                        context.startActivity(intent);
+                    }
+                }
+
+            }
+        });
     }
 
 
@@ -78,6 +94,10 @@ public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.Coun
     public void setItems(List<String> countries) {
         countriesList.addAll(countries);
         notifyDataSetChanged();
+    }
+
+    public long getItemId(int position) {
+        return position;
     }
 
     class CountriesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -97,8 +117,6 @@ public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.Coun
             importImageButton = itemView.findViewById(R.id.ib_item_import);
             removeImageButton = itemView.findViewById(R.id.ib_item_remove);
 
-            itemView.setOnClickListener(this);
-
         }
 
         public void bind(String name) {
@@ -111,9 +129,7 @@ public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.Coun
         }
     }
 
-    public void setOnItemClickListener(ClickListener clickListener) {
-        CountriesAdapter.clickListener = clickListener;
-    }
+
 
     public interface ClickListener {
         void onItemClick(int position, View v);

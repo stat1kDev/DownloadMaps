@@ -6,6 +6,7 @@ import android.util.Log;
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 
 public class ParserXml {
@@ -133,6 +134,74 @@ public class ParserXml {
 
         sortAndUpperCaseList(listNamesCountriesWithRegions);
         return listNamesCountriesWithRegions;
+    }
+
+    public ArrayList<String> parserXmlForRegionsCounrty(String nameCountry) {
+        ArrayList<String> listNamesRegionsCounrty = new ArrayList<>();
+        nameCountry = Character.toLowerCase(nameCountry.charAt(0)) + nameCountry.substring(1);
+
+        try {
+
+            XmlPullParser xmlPullParser = context.getResources().getXml(R.xml.regions);
+
+            while (xmlPullParser.getEventType() != XmlPullParser.END_DOCUMENT) {
+
+                switch (xmlPullParser.getEventType()) {
+                    case XmlPullParser.START_DOCUMENT: {
+                        /*if (BuildConfig.DEBUG) {
+                            Log.d("LOG_TAG", "START_DOCUMENT");
+                        }*/
+                        break;
+                    }
+
+                    case XmlPullParser.START_TAG: {
+                        /*if (BuildConfig.DEBUG) {
+                            Log.d("LOG_TAG", "START_TAG: имя тега = "
+                                    + xmlPullParser.getName()
+                                    + ", уровень = "
+                                    + xmlPullParser.getDepth()
+                                    + ", число атрибутов = "
+                                    + xmlPullParser.getAttributeCount());
+                        }*/
+                        if (xmlPullParser.getName().equals("region")) {
+                        if (xmlPullParser.getAttributeValue(null, "name").equals(nameCountry)) {
+                            xmlPullParser.nextTag();
+                            while(xmlPullParser.getDepth() > 3){
+                                if (xmlPullParser.getDepth() > 4) {
+                                    xmlPullParser.nextTag();
+                                    continue;
+                                }
+                                listNamesRegionsCounrty.add(xmlPullParser.getAttributeValue(null, "name"));
+                                xmlPullParser.nextTag();
+                            }
+
+
+                        }}
+                        break;
+                    }
+
+                    case XmlPullParser.END_TAG: {
+                        /*if (BuildConfig.DEBUG) {
+                            Log.d("LOG_TAG", "END_TAG: имя тега = " + xmlPullParser.getName());
+                        }*/
+                        break;
+                    }
+                    default:
+                        break;
+
+                }
+                xmlPullParser.next();
+
+            }
+
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+
+        listNamesRegionsCounrty.removeAll(Collections.singleton(null));
+
+        sortAndUpperCaseList(listNamesRegionsCounrty);
+        return listNamesRegionsCounrty;
     }
 
 

@@ -1,6 +1,8 @@
 package stat1kDev.downloadmaps;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         initRecyclerView();
         loadCountries();
 
+
     }
 
 
@@ -74,14 +77,6 @@ public class MainActivity extends AppCompatActivity {
 
         countriesAdapter = new CountriesAdapter();
         countriesRecyclerView.setAdapter(countriesAdapter);
-
-        countriesAdapter.setOnItemClickListener(new CountriesAdapter.ClickListener() {
-            @Override
-            public void onItemClick(int position, View v) {
-                Log.d("LOG_TAG", "itemClicked" + position);
-            }
-        });
-
 
     }
 
