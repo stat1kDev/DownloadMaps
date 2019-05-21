@@ -31,19 +31,19 @@ public class ParserXml {
                 switch (xmlPullParser.getEventType()) {
                     case XmlPullParser.START_DOCUMENT: {
                         if (BuildConfig.DEBUG) {
-                            Log.d("LOG_TAG", "START_DOCUMENT");
+                            //Log.d("LOG_TAG", "START_DOCUMENT");
                         }
                         break;
                     }
 
                     case XmlPullParser.START_TAG: {
                         if (BuildConfig.DEBUG) {
-                            Log.d("LOG_TAG", "START_TAG: имя тега = "
+                            /*Log.d("LOG_TAG", "START_TAG: имя тега = "
                                     + xmlPullParser.getName()
                                     + ", уровень = "
                                     + xmlPullParser.getDepth()
                                     + ", число атрибутов = "
-                                    + xmlPullParser.getAttributeCount());
+                                    + xmlPullParser.getAttributeCount());*/
                         }
 
                         if (xmlPullParser.getName().equals("region")) {
@@ -57,7 +57,7 @@ public class ParserXml {
 
                     case XmlPullParser.END_TAG: {
                         if (BuildConfig.DEBUG) {
-                            Log.d("LOG_TAG", "END_TAG: имя тега = " + xmlPullParser.getName());
+                            //Log.d("LOG_TAG", "END_TAG: имя тега = " + xmlPullParser.getName());
                         }
                         break;
                     }
@@ -202,6 +202,73 @@ public class ParserXml {
 
         sortAndUpperCaseList(listNamesRegionsCounrty);
         return listNamesRegionsCounrty;
+    }
+
+    public ArrayList<String> parserXmlForForDownload() {
+        ArrayList<String> listNamesRegionsForDownload = new ArrayList<>();
+
+        try {
+
+            XmlPullParser xmlPullParser = context.getResources().getXml(R.xml.regions);
+
+            while (xmlPullParser.getEventType() != XmlPullParser.END_DOCUMENT) {
+
+                switch (xmlPullParser.getEventType()) {
+                    case XmlPullParser.START_DOCUMENT: {
+                        /*if (BuildConfig.DEBUG) {
+                            Log.d("LOG_TAG", "START_DOCUMENT");
+                        }*/
+                        break;
+                    }
+
+                    case XmlPullParser.START_TAG: {
+                        /*if (BuildConfig.DEBUG) {
+                            Log.d("LOG_TAG", "START_TAG: имя тега = "
+                                    + xmlPullParser.getName()
+                                    + ", уровень = "
+                                    + xmlPullParser.getDepth()
+                                    + ", число атрибутов = "
+                                    + xmlPullParser.getAttributeCount());
+                        }*/
+                        if (xmlPullParser.getName().equals("region")) {
+
+                                while(xmlPullParser.getDepth() > 3){
+                                    if (xmlPullParser.getDepth() > 4) {
+                                        xmlPullParser.nextTag();
+                                        continue;
+                                    }
+                                    listNamesRegionsForDownload.add(xmlPullParser.getAttributeValue(null, "name"));
+                                    xmlPullParser.nextTag();
+                                }
+
+
+                            }
+                        break;
+                    }
+
+                    case XmlPullParser.END_TAG: {
+                        /*if (BuildConfig.DEBUG) {
+                            Log.d("LOG_TAG", "END_TAG: имя тега = " + xmlPullParser.getName());
+                        }*/
+                        break;
+                    }
+                    default:
+                        break;
+
+                }
+                xmlPullParser.next();
+
+            }
+
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+
+        listNamesRegionsForDownload.removeAll(Collections.singleton(null));
+
+        sortAndUpperCaseList(listNamesRegionsForDownload);
+
+        return listNamesRegionsForDownload;
     }
 
 

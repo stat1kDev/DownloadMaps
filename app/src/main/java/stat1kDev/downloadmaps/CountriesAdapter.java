@@ -2,8 +2,10 @@ package stat1kDev.downloadmaps;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +14,19 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+
+import static stat1kDev.downloadmaps.DeviceMemory.getAvailableInternalMemorySize;
+import static stat1kDev.downloadmaps.DeviceMemory.getTotalInternalMemorySize;
 
 public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.CountriesViewHolder> {
 
@@ -57,6 +70,48 @@ public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.Coun
                 countriesViewHolder.importImageButton.setVisibility(View.GONE);
                 countriesViewHolder.removeImageButton.setVisibility(View.VISIBLE);
                 countriesViewHolder.nameCountry.setPadding(0, 0, 0, 30);
+
+                /*String url = context.getString(R.string.download_start) + countriesViewHolder.nameCountry.getText().toString()
+                        + context.getString(R.string.download_europe) + context.getString(R.string.download_end);*/
+
+                Thread thread = new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        try {
+                            ParserXml xml = new ParserXml(context);
+
+                            final List<String> listCountriesForDownloads = xml.parserXmlForForDownload();
+
+                            if (listCountriesForDownloads.contains(countriesViewHolder.nameCountry.getText().toString())) {
+                                String url = context.getString(R.string.download_start) + (((RegionActivity) context).getSupportActionBar().getTitle().toString()) + "_"
+                                        + countriesViewHolder.nameCountry.getText().toString().toLowerCase()
+                                        + context.getString(R.string.download_europe) + context.getString(R.string.download_end);
+
+                                String fileName = (((RegionActivity) context).getSupportActionBar().getTitle().toString()) + "_"
+                                        + countriesViewHolder.nameCountry.getText().toString().toLowerCase()
+                                        + context.getString(R.string.download_europe) + context.getString(R.string.download_end);
+
+                                DownloadFromUrl(url, fileName);
+
+                                Log.d("TAG_URL1", url);
+                            } else {
+                                String url = context.getString(R.string.download_start) + countriesViewHolder.nameCountry.getText().toString()
+                                        + context.getString(R.string.download_europe) + context.getString(R.string.download_end);
+                                String fileName = countriesViewHolder.nameCountry.getText().toString()
+                                        + context.getString(R.string.download_europe) + context.getString(R.string.download_end);
+                                DownloadFromUrl(url, fileName);
+                                Log.d("TAG_URL2", url);
+                            }
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+                thread.start();
+
             }
         });
 
@@ -130,9 +185,63 @@ public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.Coun
     }
 
 
-
     public interface ClickListener {
         void onItemClick(int position, View v);
+    }
+
+    private void DownloadFromUrl(String imageURL, String fileName) {  //this is the downloader method
+        try {
+
+            URL url = new URL(imageURL); //you can write here any link
+            String pathFolder = Environment.getExternalStorageDirectory() + "/Maps";
+            String pathFile = pathFolder + fileName;
+            File file = new File(pathFolder);
+            if(!file.exists()){
+                file.mkdirs();
+            }
+
+            long startTime = System.currentTimeMillis();
+            Log.d("DownloadManager", "download begining");
+            Log.d("DownloadManager", "download url:" + url);
+            Log.d("DownloadManager", "downloaded file name:" + fileName);
+            /* Open a connection to that URL. */
+            URLConnection ucon = url.openConnection();
+            ucon.connect();
+            int lengthOfFile = ucon.getContentLength();
+
+            /*
+             * Define InputStreams to read from the URLConnection.
+             */
+
+            InputStream is = ucon.getInputStream();
+
+
+            /*
+             * Read bytes to the Buffer until there is nothing more to read(-1).
+             */
+            BufferedInputStream bis = new BufferedInputStream(is);
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            //We create an array of bytes
+            byte[] data = new byte[500000];
+            int current = 0;
+
+            while ((current = bis.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, current);
+
+            }
+
+            FileOutputStream fos = new FileOutputStream(pathFile);
+            fos.write(buffer.toByteArray());
+            fos.close();
+            Log.d("DownloadManager", "download ready in"
+                    + ((System.currentTimeMillis() - startTime) / 1000)
+                    + " sec");
+
+
+        } catch (IOException e) {
+            Log.d("DownloadManager", "Error: " + e);
+        }
+
     }
 
 
