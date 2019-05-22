@@ -19,26 +19,9 @@ public class RegionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_region);
 
-        Intent intent = getIntent();
         setActionBarTitle();
-
-
-        ParserXml parserXml = new ParserXml(this);
-
-        String titleText = intent.getStringExtra("toolbarName");
-
-        List<String> list = parserXml.parserXmlForRegionsCounrty(titleText);
-
-        regionsRecyclerView = findViewById(R.id.rv_regions);
-        regionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        regionsAdapter = new CountriesAdapter();
-        regionsRecyclerView.setAdapter(regionsAdapter);
-
-        regionsAdapter.setItems(list);
-        regionsAdapter.notifyDataSetChanged();
-
-
+        initRecyclerView();
+        loadRegions();
 
     }
 
@@ -49,4 +32,23 @@ public class RegionActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(titleText);
     }
 
+    private void initRecyclerView() {
+        regionsRecyclerView = findViewById(R.id.rv_regions);
+        regionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        regionsAdapter = new CountriesAdapter();
+        regionsRecyclerView.setAdapter(regionsAdapter);
+    }
+
+    private void loadRegions() {
+        Intent intent = getIntent();
+        ParserXml parserXml = new ParserXml(this);
+
+        String titleText = intent.getStringExtra("toolbarName");
+
+        List<String> list = parserXml.parserXmlForRegionsCounrty(titleText);
+
+        regionsAdapter.setItems(list);
+        regionsAdapter.notifyDataSetChanged();
+    }
 }

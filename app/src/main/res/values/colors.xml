@@ -13,4 +13,6 @@
     <color name="colorIcMap">#727272</color>
 
     <color name="textColor">#212121</color>
+
+    <color name="colorDownloadedMap">#4CAF50</color>
 </resources>

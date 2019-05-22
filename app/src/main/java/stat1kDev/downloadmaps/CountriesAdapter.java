@@ -2,6 +2,7 @@ package stat1kDev.downloadmaps;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -24,9 +25,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
-
-import static stat1kDev.downloadmaps.DeviceMemory.getAvailableInternalMemorySize;
-import static stat1kDev.downloadmaps.DeviceMemory.getTotalInternalMemorySize;
 
 public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.CountriesViewHolder> {
 
@@ -65,20 +63,21 @@ public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.Coun
 
         countriesViewHolder.importImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 countriesViewHolder.downloadProgressBar.setVisibility(View.VISIBLE);
                 countriesViewHolder.importImageButton.setVisibility(View.GONE);
                 countriesViewHolder.removeImageButton.setVisibility(View.VISIBLE);
                 countriesViewHolder.nameCountry.setPadding(0, 0, 0, 30);
+                
+                countriesViewHolder.downloadProgressBar.setMax(100);
+                countriesViewHolder.downloadProgressBar.setProgress(0);
 
-                /*String url = context.getString(R.string.download_start) + countriesViewHolder.nameCountry.getText().toString()
-                        + context.getString(R.string.download_europe) + context.getString(R.string.download_end);*/
 
-                Thread thread = new Thread(new Runnable() {
-
+                final Thread thread = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
+
                             ParserXml xml = new ParserXml(context);
 
                             final List<String> listCountriesForDownloads = xml.parserXmlForForDownload();
@@ -95,13 +94,33 @@ public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.Coun
                                 DownloadFromUrl(url, fileName);
 
                                 Log.d("TAG_URL1", url);
+                                view.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        countriesViewHolder.mapIcon.setColorFilter(context.getResources().getColor(R.color.colorDownloadedMap), PorterDuff.Mode.SRC_IN);
+                                        countriesViewHolder.importImageButton.setVisibility(View.VISIBLE);
+                                        countriesViewHolder.removeImageButton.setVisibility(View.GONE);
+                                        countriesViewHolder.downloadProgressBar.setVisibility(View.GONE);
+                                    }
+                                });
                             } else {
                                 String url = context.getString(R.string.download_start) + countriesViewHolder.nameCountry.getText().toString()
                                         + context.getString(R.string.download_europe) + context.getString(R.string.download_end);
                                 String fileName = countriesViewHolder.nameCountry.getText().toString()
                                         + context.getString(R.string.download_europe) + context.getString(R.string.download_end);
+
                                 DownloadFromUrl(url, fileName);
                                 Log.d("TAG_URL2", url);
+                                view.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        countriesViewHolder.mapIcon.setColorFilter(context.getResources().getColor(R.color.colorDownloadedMap), PorterDuff.Mode.SRC_IN);
+                                        countriesViewHolder.importImageButton.setVisibility(View.VISIBLE);
+                                        countriesViewHolder.removeImageButton.setVisibility(View.GONE);
+                                        countriesViewHolder.downloadProgressBar.setVisibility(View.GONE);
+                                    }
+                                });
+
                             }
 
                         } catch (Exception e) {
@@ -112,16 +131,6 @@ public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.Coun
 
                 thread.start();
 
-            }
-        });
-
-        countriesViewHolder.removeImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                countriesViewHolder.downloadProgressBar.setVisibility(View.GONE);
-                countriesViewHolder.importImageButton.setVisibility(View.VISIBLE);
-                countriesViewHolder.removeImageButton.setVisibility(View.GONE);
-                countriesViewHolder.nameCountry.setPadding(0, 0, 0, 0);
             }
         });
 
@@ -189,10 +198,10 @@ public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.Coun
         void onItemClick(int position, View v);
     }
 
-    private void DownloadFromUrl(String imageURL, String fileName) {  //this is the downloader method
+    private void DownloadFromUrl(String imageURL, String fileName) {
         try {
 
-            URL url = new URL(imageURL); //you can write here any link
+            URL url = new URL(imageURL);
             String pathFolder = Environment.getExternalStorageDirectory() + "/Maps";
             String pathFile = pathFolder + fileName;
             File file = new File(pathFolder);
@@ -204,25 +213,16 @@ public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.Coun
             Log.d("DownloadManager", "download begining");
             Log.d("DownloadManager", "download url:" + url);
             Log.d("DownloadManager", "downloaded file name:" + fileName);
-            /* Open a connection to that URL. */
+
             URLConnection ucon = url.openConnection();
             ucon.connect();
-            int lengthOfFile = ucon.getContentLength();
-
-            /*
-             * Define InputStreams to read from the URLConnection.
-             */
 
             InputStream is = ucon.getInputStream();
 
-
-            /*
-             * Read bytes to the Buffer until there is nothing more to read(-1).
-             */
             BufferedInputStream bis = new BufferedInputStream(is);
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-            //We create an array of bytes
-            byte[] data = new byte[500000];
+
+            byte[] data = new byte[50];
             int current = 0;
 
             while ((current = bis.read(data, 0, data.length)) != -1) {
