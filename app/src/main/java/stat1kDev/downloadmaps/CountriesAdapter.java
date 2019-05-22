@@ -68,7 +68,7 @@ public class CountriesAdapter extends RecyclerView.Adapter<CountriesAdapter.Coun
                 countriesViewHolder.importImageButton.setVisibility(View.GONE);
                 countriesViewHolder.removeImageButton.setVisibility(View.VISIBLE);
                 countriesViewHolder.nameCountry.setPadding(0, 0, 0, 30);
-                
+
                 countriesViewHolder.downloadProgressBar.setMax(100);
                 countriesViewHolder.downloadProgressBar.setProgress(0);
 
