@@ -23,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView textViewFreeMemory;
     private ProgressBar progressBarMemory;
     private RecyclerView countriesRecyclerView;
-
     private CountriesAdapter countriesAdapter;
 
     private double freeMemory;
@@ -103,6 +102,5 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
     }
-
 
 }

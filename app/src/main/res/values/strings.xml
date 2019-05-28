@@ -7,4 +7,7 @@
     <string name="download_start">https://download.osmand.net/download.php?standard=yes&amp;file=</string>
     <string name="download_europe">_europe</string>
     <string name="download_end">_2.obf.zip</string>
+    <string-array name="downloaded">
+
+    </string-array>
 </resources>

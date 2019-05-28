@@ -17,6 +17,7 @@ public class ParserXml {
 
 
 
+
     public ArrayList<String> parserXmlForCountries() {
         ArrayList<String> listNamesCountries = new ArrayList<>();
 
